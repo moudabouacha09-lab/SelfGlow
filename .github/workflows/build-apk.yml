@@ -32,15 +32,14 @@ jobs:
       - name: Generate Android folder
         run: npx expo prebuild --platform android --clean
 
-      - name: Make Gradlew executable
-        run: chmod +x android/gradlew
-
       - name: 🚀 Build Release APK (Gradle)
         env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
           NODE_ENV: production
           BABEL_ENV: production
         run: |
           cd android
+          chmod +x gradlew
           ./gradlew clean
           ./gradlew createBundleReleaseJsAndAssets assembleRelease
 
@@ -48,5 +47,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SelfGlow-APK
-          path: android/app/build/outputs/apk/release/*.apk
+          path: android/app/build/outputs/apk/**/*.apk
           retention-days: 30
